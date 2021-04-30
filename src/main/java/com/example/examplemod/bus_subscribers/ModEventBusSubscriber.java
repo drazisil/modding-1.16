@@ -1,12 +1,10 @@
 package com.example.examplemod.bus_subscribers;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.RabbitEntity;
+import com.example.examplemod.Helpers;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -43,45 +41,7 @@ public class ModEventBusSubscriber {
 
             // We have our stick. Can we summon anything?
 
-            // Let's create a rabbit. Rabbits come from wands, right?
-            // the Rabbit is already registered in the EntityType enum. We will call it's create() method and pass in world.
-            RabbitEntity rabbit = EntityType.RABBIT.create(world);
-
-            // Add the rabbit to the world
-            assert rabbit != null;
-            world.addFreshEntity(rabbit);
-
-            // Where is our rabbit? I don't see it at this point.
-
-            // is is alive?
-            MOD_LOGGER.info("Is rabbit alive? " + rabbit.isAlive());
-
-            // It is. Where is it?
-            MOD_LOGGER.info("player location: " + player.position());
-            MOD_LOGGER.info("rabbit location: " + rabbit.position());
-
-            // Well, well, well. It seems our rabbit is at 0, 0, 0.
-            // This makes sense, since we only added it to the world, and didn't pass a location.
-            // Let's move it to the player
-//            MOD_LOGGER.info("Moving rabbit to player");
-//            rabbit.move(MoverType.SELF, player.position());
-
-            // Still not seeing my rabbit. Let's check if it moved.
-//            MOD_LOGGER.info("player location: " + player.position());
-//            MOD_LOGGER.info("rabbit location: " + rabbit.position());
-
-            // It's still not here. It did move a bit, but not anywhere close.
-            // That last command generated a lot of server lags as well.
-            // This is because we asked the rabbit to come to the player, using it's normal move AI
-
-            // Let's try teleporting it to the player instead.
-            Vector3d playerPosition = player.position();
-            double playerX = playerPosition.x;
-            double playerY = playerPosition.y;
-            double playerZ = playerPosition.z;
-            rabbit.teleportTo(playerX, playerY, playerZ);
-
-            // I have bunnies. More then one, because of the way interact works.
+            Helpers.spawnRabbit(world, player.position());
 
         }
 
