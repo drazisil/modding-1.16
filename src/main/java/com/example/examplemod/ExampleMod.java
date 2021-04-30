@@ -35,7 +35,7 @@ public class ExampleMod
 
         We will be using a stick as our "wand" to summon the entity.
 
-        We will be listening to events using the event buss in com.example.examplemod.bus_subscribers.ModEventBusSubscriber
+        We will be listening to events using the event buss in com.example.examplemod.bus_subscribers.ForgeEventBusSubscriber
          */
 
 
@@ -54,6 +54,10 @@ public class ExampleMod
 
         // We need to call our EntityRegistry class, otherwise the entity will not be in EntityTypes when we try to use it
         ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
+
+        // We will also need a renderer for our custom class, as net.minecraft.client.renderer.entity.EntityRenderer.shouldRender is returning null
+        // Let's start by trying to tell our customer rabbit to use the default rabbit renderer
+        // this.register(EntityType.RABBIT, new RabbitRenderer(this));
     }
 
     private void setup(final FMLCommonSetupEvent event)
