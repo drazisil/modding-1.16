@@ -16,6 +16,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.stream.Collectors;
 
+import static com.example.examplemod.registry.EntityRegistry.ENTITIES;
+
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("examplemod")
 public class ExampleMod
@@ -23,6 +25,8 @@ public class ExampleMod
     // Directly reference a log4j logger.
     // I want to be able to use this logger instance throughout my mod, so I'm making it public
     public static final Logger MOD_LOGGER = LogManager.getLogger();
+
+    public static final String MODID = "examplemod";
 
     public ExampleMod() {
 
@@ -47,6 +51,9 @@ public class ExampleMod
         // Register ourselves for server and other game events we are interested in
         // This is needed for the @SubscribeEvent method in this class to work
         MinecraftForge.EVENT_BUS.register(this);
+
+        // We need to call our EntityRegistry class, otherwise the entity will not be in EntityTypes when we try to use it
+        ENTITIES.register(FMLJavaModLoadingContext.get().getModEventBus());
     }
 
     private void setup(final FMLCommonSetupEvent event)
