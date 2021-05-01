@@ -11,14 +11,20 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class WareRabbitRenderer extends MobRenderer<WareRabbitEntity, WareRabbitModel<WareRabbitEntity>> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(ExampleMod.MODID, "textures/entity/ware.png");
+    private static final ResourceLocation TEXTURE_DAY = new ResourceLocation(ExampleMod.MODID, "textures/entity/warerabbit/brown.png");
+    private static final ResourceLocation TEXTURE_NIGHT = new ResourceLocation(ExampleMod.MODID, "textures/entity/warerabbit/ware.png");
 
     public WareRabbitRenderer(EntityRendererManager p_i47196_1_) {
         super(p_i47196_1_, new WareRabbitModel<>(), 0.3F);
     }
 
     @Override
-    public ResourceLocation getTextureLocation(WareRabbitEntity p_110775_1_) {
-        return TEXTURE;
+    public ResourceLocation getTextureLocation(WareRabbitEntity entity) {
+
+        if (entity.level.getDayTime() >= 0 && entity.level.getDayTime() <= 12000) {
+            return TEXTURE_DAY;
+        }
+        return TEXTURE_NIGHT;
+
     }
 }
