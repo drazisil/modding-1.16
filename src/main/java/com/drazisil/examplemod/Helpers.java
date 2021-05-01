@@ -1,12 +1,12 @@
-package com.example.examplemod;
+package com.drazisil.examplemod;
 
-import com.example.examplemod.registry.EntityRegistry;
+import com.drazisil.examplemod.registry.EntityRegistry;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.RabbitEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
-import static com.example.examplemod.ExampleMod.MOD_LOGGER;
+import static com.drazisil.examplemod.ExampleMod.MOD_LOGGER;
 
 public class Helpers {
 

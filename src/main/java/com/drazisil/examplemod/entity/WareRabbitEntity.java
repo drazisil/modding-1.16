@@ -1,4 +1,4 @@
-package com.example.examplemod.entity;
+package com.drazisil.examplemod.entity;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
@@ -19,7 +19,7 @@ public class WareRabbitEntity extends RabbitEntity {
 
         // We need to do the same. How and where should we call this?
         // The `put()` method says that we should use net.minecraftforge.event.entity.EntityAttributeCreationEvent#put
-        // Let's try calling it here com.example.examplemod.bus_subscribers.ModEventBusSubscriber.onEntityAttributeCreationEvent
+        // Let's try calling it here com.drazisil.examplemod.bus_subscribers.ModEventBusSubscriber.onEntityAttributeCreationEvent
 
         super(p_i50247_1_, p_i50247_2_);
     }

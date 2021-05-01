@@ -1,8 +1,8 @@
-package com.example.examplemod.bus_subscribers.client;
+package com.drazisil.examplemod.bus_subscribers.client;
 
-import com.example.examplemod.ExampleMod;
-import com.example.examplemod.registry.EntityRegistry;
-import net.minecraft.client.renderer.entity.RabbitRenderer;
+import com.drazisil.examplemod.ExampleMod;
+import com.drazisil.examplemod.client.WareRabbitRenderer;
+import com.drazisil.examplemod.registry.EntityRegistry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -17,6 +17,6 @@ public class ClientForgeEventBusSubscriber {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         ExampleMod.MOD_LOGGER.info("Registering rendering handler");
-        RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.WARE_RABBIT.get(), RabbitRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityRegistry.WARE_RABBIT.get(), WareRabbitRenderer::new);
     }
 }

@@ -1,6 +1,6 @@
-package com.example.examplemod.bus_subscribers;
+package com.drazisil.examplemod.bus_subscribers;
 
-import com.example.examplemod.Helpers;
+import com.drazisil.examplemod.Helpers;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -10,7 +10,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import static com.example.examplemod.ExampleMod.MOD_LOGGER;
+import static com.drazisil.examplemod.ExampleMod.MOD_LOGGER;
 
 // You can use EventBusSubscriber to automatically subscribe events on the contained class
 @Mod.EventBusSubscriber()

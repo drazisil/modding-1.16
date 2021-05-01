@@ -1,4 +1,4 @@
-package com.example.examplemod;
+package com.drazisil.examplemod;
 
 import net.minecraft.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.stream.Collectors;
 
-import static com.example.examplemod.registry.EntityRegistry.ENTITIES;
+import static com.drazisil.examplemod.registry.EntityRegistry.ENTITIES;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("examplemod")
@@ -35,7 +35,7 @@ public class ExampleMod
 
         We will be using a stick as our "wand" to summon the entity.
 
-        We will be listening to events using the event buss in com.example.examplemod.bus_subscribers.ForgeEventBusSubscriber
+        We will be listening to events using the event buss in com.drazisil.examplemod.bus_subscribers.ForgeEventBusSubscriber
          */
 
 
@@ -58,6 +58,9 @@ public class ExampleMod
         // We will also need a renderer for our custom class, as net.minecraft.client.renderer.entity.EntityRenderer.shouldRender is returning null
         // Let's start by trying to tell our customer rabbit to use the default rabbit renderer
         // this.register(EntityType.RABBIT, new RabbitRenderer(this));
+
+        // Since that worked, we will now create a custom renderer. Due to how models and renderers are linked,
+        // we will also have to create a custom model at the same time. For now, let's try to copy the existing rabbit ones.
     }
 
     private void setup(final FMLCommonSetupEvent event)

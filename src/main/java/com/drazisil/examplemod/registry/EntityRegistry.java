@@ -1,13 +1,13 @@
-package com.example.examplemod.registry;
+package com.drazisil.examplemod.registry;
 
-import com.example.examplemod.entity.WareRabbitEntity;
+import com.drazisil.examplemod.entity.WareRabbitEntity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import static com.example.examplemod.ExampleMod.MODID;
+import static com.drazisil.examplemod.ExampleMod.MODID;
 
 public class EntityRegistry {
 
