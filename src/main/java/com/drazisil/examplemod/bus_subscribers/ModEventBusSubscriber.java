@@ -1,5 +1,6 @@
 package com.drazisil.examplemod.bus_subscribers;
 
+import com.drazisil.examplemod.entity.AirPigEntity;
 import com.drazisil.examplemod.entity.WareRabbitEntity;
 import com.drazisil.examplemod.registry.EntityRegistry;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
@@ -18,5 +19,6 @@ public class ModEventBusSubscriber {
         // First, is this getting called?
         MOD_LOGGER.info("Hello from the EntityAttributeCreationEvent!");
         event.put(EntityRegistry.WARE_RABBIT.get(), WareRabbitEntity.createAttributes().build());
+        event.put(EntityRegistry.AIR_PIG.get(), AirPigEntity.createAttributes().build());
     }
 }

@@ -1,10 +1,13 @@
 package com.drazisil.examplemod.bus_subscribers;
 
 import com.drazisil.examplemod.Helpers;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -41,10 +44,28 @@ public class ForgeEventBusSubscriber {
 
             // We have our stick. Can we summon anything?
 
-            Helpers.spawnWareRabbit(world, player.position());
+            Helpers.spawnAirPig(world, player.position());
 
         }
 
         // If we have reached here, the item is not a stick, and we will let the event process normally
+    }
+
+    @SubscribeEvent
+    public static void onEntityFeedEvent(PlayerInteractEvent.EntityInteract event) {
+        World world = event.getWorld();
+        PlayerEntity player = event.getPlayer();
+        Item item = event.getItemStack().getItem();
+        Entity targetEntity = event.getTarget();
+
+        if (!world.isClientSide &&
+                targetEntity.getClass() == PigEntity.class &&
+                item == Items.GOLDEN_CARROT) {
+            MOD_LOGGER.debug("I believe...");
+
+            Vector3d targetPosition = targetEntity.position();
+            targetEntity.remove();
+            Helpers.spawnAirPig(world, targetPosition);
+        }
     }
 }

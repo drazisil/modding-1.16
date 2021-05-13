@@ -1,0 +1,117 @@
+package com.drazisil.examplemod.entity;
+
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.controller.FlyingMovementController;
+import net.minecraft.entity.passive.IFlyingAnimal;
+import net.minecraft.entity.passive.PigEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
+
+public class AirPigEntity extends PigEntity implements IFlyingAnimal {
+    private static final DataParameter<Boolean> DATA_SADDLE_ID = EntityDataManager.defineId(AirPigEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> DATA_BOOST_TIME = EntityDataManager.defineId(AirPigEntity.class, DataSerializers.INT);
+    private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.GOLDEN_CARROT);
+    private final BoostHelper steering = new BoostHelper(this.entityData, DATA_BOOST_TIME, DATA_SADDLE_ID);
+
+    public AirPigEntity(EntityType<? extends PigEntity> p_i50250_1_, World p_i50250_2_) {
+        super(p_i50250_1_, p_i50250_2_);
+        this.moveControl = new FlyingMovementController(this, 20, true);
+    }
+
+    // This method is called to add attributes to this EntityType
+    public static AttributeModifierMap.MutableAttribute createAttributes() {
+        return MobEntity.createMobAttributes()
+                .add(Attributes.MAX_HEALTH, 3.0D)
+                .add(Attributes.MOVEMENT_SPEED, (double)0.3F)
+                .add(Attributes.FLYING_SPEED, (double)0.6F);
+    }
+
+    public boolean canBeControlledByRider() {
+        Entity entity = this.getControllingPassenger();
+        if (!(entity instanceof PlayerEntity)) {
+            return false;
+        } else {
+            PlayerEntity playerentity = (PlayerEntity)entity;
+            return true;
+//            return playerentity.getMainHandItem().getItem() == Items.CARROT_ON_A_STICK || playerentity.getOffhandItem().getItem() == Items.CARROT_ON_A_STICK;
+        }
+    }
+
+//    public boolean isSaddled() {
+//        return this.steering.hasSaddle();
+//    }
+
+    public void travel(Vector3d p_213352_1_) {
+        if (this.isAlive()) {
+            if (this.isVehicle() && this.canBeControlledByRider() && this.isSaddled()) {
+                LivingEntity livingentity = (LivingEntity)this.getControllingPassenger();
+                this.yRot = livingentity.yRot;
+                this.yRotO = this.yRot;
+                this.xRot = livingentity.xRot * 0.5F;
+                this.setRot(this.yRot, this.xRot);
+                this.yBodyRot = this.yRot;
+                this.yHeadRot = this.yBodyRot;
+                float f = livingentity.xxa * 0.5F;
+                float f1 = livingentity.zza;
+//                if (f1 <= 0.0F) {
+//                    f1 *= 0.25F;
+//                    this.gallopSoundCounter = 0;
+//                }
+//
+//                if (this.onGround && this.playerJumpPendingScale == 0.0F && this.isStanding() && !this.allowStandSliding) {
+//                    f = 0.0F;
+//                    f1 = 0.0F;
+//                }
+
+//                if (this.playerJumpPendingScale > 0.0F && !this.isJumping() && this.onGround) {
+//                    double d0 = this.getCustomJump() * (double)this.playerJumpPendingScale * (double)this.getBlockJumpFactor();
+//                    double d1;
+//                    if (this.hasEffect(Effects.JUMP)) {
+//                        d1 = d0 + (double)((float)(this.getEffect(Effects.JUMP).getAmplifier() + 1) * 0.1F);
+//                    } else {
+//                        d1 = d0;
+//                    }
+//
+//                    Vector3d vector3d = this.getDeltaMovement();
+//                    this.setDeltaMovement(vector3d.x, d1, vector3d.z);
+//                    this.setIsJumping(true);
+//                    this.hasImpulse = true;
+//                    net.minecraftforge.common.ForgeHooks.onLivingJump(this);
+//                    if (f1 > 0.0F) {
+//                        float f2 = MathHelper.sin(this.yRot * ((float)Math.PI / 180F));
+//                        float f3 = MathHelper.cos(this.yRot * ((float)Math.PI / 180F));
+//                        this.setDeltaMovement(this.getDeltaMovement().add((double)(-0.4F * f2 * this.playerJumpPendingScale), 0.0D, (double)(0.4F * f3 * this.playerJumpPendingScale)));
+//                    }
+//
+//                    this.playerJumpPendingScale = 0.0F;
+//                }
+
+                this.flyingSpeed = this.getSpeed() * 0.1F;
+                if (this.isControlledByLocalInstance()) {
+                    this.setSpeed((float)this.getAttributeValue(Attributes.MOVEMENT_SPEED));
+                    super.travel(new Vector3d((double)f, p_213352_1_.y, (double)f1));
+                } else if (livingentity instanceof PlayerEntity) {
+                    this.setDeltaMovement(Vector3d.ZERO);
+                }
+
+//                if (this.onGround) {
+//                    this.playerJumpPendingScale = 0.0F;
+//                    this.setIsJumping(false);
+//                }
+
+                this.calculateEntityAnimation(this, false);
+            } else {
+                this.flyingSpeed = 0.02F;
+                super.travel(p_213352_1_);
+            }
+        }
+    }
+}
