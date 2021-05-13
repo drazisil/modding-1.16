@@ -4,24 +4,33 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.FlyingMovementController;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.IFlyingAnimal;
-import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
-public class AirPigEntity extends PigEntity implements IFlyingAnimal {
+import javax.annotation.Nullable;
+
+public class AirPigEntity extends AnimalEntity implements IFlyingAnimal, IEquipable {
     private static final DataParameter<Boolean> DATA_SADDLE_ID = EntityDataManager.defineId(AirPigEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> DATA_BOOST_TIME = EntityDataManager.defineId(AirPigEntity.class, DataSerializers.INT);
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.GOLDEN_CARROT);
     private final BoostHelper steering = new BoostHelper(this.entityData, DATA_BOOST_TIME, DATA_SADDLE_ID);
 
-    public AirPigEntity(EntityType<? extends PigEntity> p_i50250_1_, World p_i50250_2_) {
+    public AirPigEntity(EntityType<? extends AnimalEntity> p_i50250_1_, World p_i50250_2_) {
         super(p_i50250_1_, p_i50250_2_);
         this.moveControl = new FlyingMovementController(this, 20, true);
     }
@@ -48,6 +57,22 @@ public class AirPigEntity extends PigEntity implements IFlyingAnimal {
 //    public boolean isSaddled() {
 //        return this.steering.hasSaddle();
 //    }
+
+    public boolean isSaddleable() {
+        return this.isAlive() && !this.isBaby();
+    }
+
+    public void equipSaddle(@Nullable SoundCategory p_230266_1_) {
+        this.steering.setSaddle(true);
+        if (p_230266_1_ != null) {
+            this.level.playSound((PlayerEntity)null, this, SoundEvents.PIG_SADDLE, p_230266_1_, 0.5F, 1.0F);
+        }
+
+    }
+
+    public boolean isSaddled() {
+        return this.steering.hasSaddle();
+    }
 
     public void travel(Vector3d p_213352_1_) {
         if (this.isAlive()) {
@@ -111,6 +136,65 @@ public class AirPigEntity extends PigEntity implements IFlyingAnimal {
             } else {
                 this.flyingSpeed = 0.02F;
                 super.travel(p_213352_1_);
+            }
+        }
+    }
+
+    @Nullable
+    @Override
+    public AgeableEntity getBreedOffspring(ServerWorld p_241840_1_, AgeableEntity p_241840_2_) {
+        return null;
+    }
+
+    @Override
+    public boolean shouldRiderSit() {
+        return super.shouldRiderSit();
+    }
+
+    @Override
+    public boolean canRiderInteract() {
+        return super.canRiderInteract();
+    }
+
+    public void addAdditionalSaveData(CompoundNBT p_213281_1_) {
+        super.addAdditionalSaveData(p_213281_1_);
+        this.steering.addAdditionalSaveData(p_213281_1_);
+    }
+
+    public void readAdditionalSaveData(CompoundNBT p_70037_1_) {
+        super.readAdditionalSaveData(p_70037_1_);
+        this.steering.readAdditionalSaveData(p_70037_1_);
+    }
+
+    public void onSyncedDataUpdated(DataParameter<?> p_184206_1_) {
+        if (DATA_BOOST_TIME.equals(p_184206_1_) && this.level.isClientSide) {
+            this.steering.onSynced();
+        }
+
+        super.onSyncedDataUpdated(p_184206_1_);
+    }
+
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_SADDLE_ID, false);
+        this.entityData.define(DATA_BOOST_TIME, 0);
+    }
+
+    public ActionResultType mobInteract(PlayerEntity p_230254_1_, Hand p_230254_2_) {
+        boolean flag = this.isFood(p_230254_1_.getItemInHand(p_230254_2_));
+        if (!flag && this.isSaddled() && !this.isVehicle() && !p_230254_1_.isSecondaryUseActive()) {
+            if (!this.level.isClientSide) {
+                p_230254_1_.startRiding(this);
+            }
+
+            return ActionResultType.sidedSuccess(this.level.isClientSide);
+        } else {
+            ActionResultType actionresulttype = super.mobInteract(p_230254_1_, p_230254_2_);
+            if (!actionresulttype.consumesAction()) {
+                ItemStack itemstack = p_230254_1_.getItemInHand(p_230254_2_);
+                return itemstack.getItem() == Items.SADDLE ? itemstack.interactLivingEntity(p_230254_1_, this, p_230254_2_) : ActionResultType.PASS;
+            } else {
+                return actionresulttype;
             }
         }
     }
