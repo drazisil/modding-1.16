@@ -24,7 +24,7 @@ import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 
-public class AirPigEntity extends AnimalEntity implements IFlyingAnimal, IEquipable {
+public class AirPigEntity extends AnimalEntity implements IFlyingAnimal, IEquipable, IRideable {
     private static final DataParameter<Boolean> DATA_SADDLE_ID = EntityDataManager.defineId(AirPigEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> DATA_BOOST_TIME = EntityDataManager.defineId(AirPigEntity.class, DataSerializers.INT);
     private static final Ingredient FOOD_ITEMS = Ingredient.of(Items.GOLDEN_CARROT);
@@ -41,6 +41,11 @@ public class AirPigEntity extends AnimalEntity implements IFlyingAnimal, IEquipa
                 .add(Attributes.MAX_HEALTH, 3.0D)
                 .add(Attributes.MOVEMENT_SPEED, (double)0.3F)
                 .add(Attributes.FLYING_SPEED, (double)0.6F);
+    }
+
+    @Nullable
+    public Entity getControllingPassenger() {
+        return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
     }
 
     public boolean canBeControlledByRider() {
@@ -77,15 +82,18 @@ public class AirPigEntity extends AnimalEntity implements IFlyingAnimal, IEquipa
     public void travel(Vector3d p_213352_1_) {
         if (this.isAlive()) {
             if (this.isVehicle() && this.canBeControlledByRider() && this.isSaddled()) {
-                LivingEntity livingentity = (LivingEntity)this.getControllingPassenger();
-                this.yRot = livingentity.yRot;
-                this.yRotO = this.yRot;
-                this.xRot = livingentity.xRot * 0.5F;
-                this.setRot(this.yRot, this.xRot);
-                this.yBodyRot = this.yRot;
-                this.yHeadRot = this.yBodyRot;
-                float f = livingentity.xxa * 0.5F;
-                float f1 = livingentity.zza;
+                this.travel(this, this.steering, p_213352_1_);
+
+//                LivingEntity livingentity = (LivingEntity)this.getControllingPassenger();
+//                this.yRot = livingentity.yRot;
+//                this.yRotO = this.yRot;
+//                this.xRot = livingentity.xRot * 0.5F;
+//                this.setRot(this.yRot, this.xRot);
+//                this.yBodyRot = this.yRot;
+//                this.yHeadRot = this.yBodyRot;
+//                float f = livingentity.xxa * 0.5F;
+//                float f1 = livingentity.zza;
+
 //                if (f1 <= 0.0F) {
 //                    f1 *= 0.25F;
 //                    this.gallopSoundCounter = 0;
@@ -119,20 +127,24 @@ public class AirPigEntity extends AnimalEntity implements IFlyingAnimal, IEquipa
 //                    this.playerJumpPendingScale = 0.0F;
 //                }
 
-                this.flyingSpeed = this.getSpeed() * 0.1F;
-                if (this.isControlledByLocalInstance()) {
-                    this.setSpeed((float)this.getAttributeValue(Attributes.MOVEMENT_SPEED));
-                    super.travel(new Vector3d((double)f, p_213352_1_.y, (double)f1));
-                } else if (livingentity instanceof PlayerEntity) {
-                    this.setDeltaMovement(Vector3d.ZERO);
-                }
+//                this.flyingSpeed = this.getSpeed() * 0.1F;
+//                if (this.isControlledByLocalInstance()) {
+//                    this.setSpeed((float)this.getAttributeValue(Attributes.MOVEMENT_SPEED));
+//                    super.travel(new Vector3d((double)f, p_213352_1_.y, (double)f1));
+//                } else if (livingentity instanceof PlayerEntity) {
+//                    this.setDeltaMovement(Vector3d.ZERO);
+//                }
 
 //                if (this.onGround) {
 //                    this.playerJumpPendingScale = 0.0F;
 //                    this.setIsJumping(false);
 //                }
 
-                this.calculateEntityAnimation(this, false);
+//                this.calculateEntityAnimation(this, false);
+//            } else {
+//                this.flyingSpeed = 0.02F;
+//                super.travel(p_213352_1_);
+//            }
             } else {
                 this.flyingSpeed = 0.02F;
                 super.travel(p_213352_1_);
@@ -197,5 +209,19 @@ public class AirPigEntity extends AnimalEntity implements IFlyingAnimal, IEquipa
                 return actionresulttype;
             }
         }
+    }
+
+    @Override
+    public boolean boost() {
+        return false;
+    }
+
+    @Override
+    public void travelWithInput(Vector3d p_230267_1_) {
+        super.travel(p_230267_1_);
+    }
+
+    public float getSteeringSpeed() {
+        return (float)this.getAttributeValue(Attributes.MOVEMENT_SPEED) * 0.225F;
     }
 }
